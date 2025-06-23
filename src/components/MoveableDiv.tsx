@@ -1,4 +1,4 @@
-import type { HTMLAttributes, TouchEventHandler } from 'react'
+import type { HTMLAttributes, TouchEventHandler, MouseEventHandler } from 'react'
 
 interface MovableDivProps extends HTMLAttributes<HTMLDivElement> {
 	onMoveStart?: (e: MoveEvent) => any
@@ -13,18 +13,20 @@ type MoveEvent = {
 }
 
 export function MovableDiv({ onMoveStart, onMove, onMoveEnd, ...props }: MovableDivProps) {
-	const handleTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
-		const startX = e.touches[0].clientX
-		const startY = e.touches[0].clientY
-		const button = e.currentTarget
+	const handleStart = (
+		startX: number,
+		startY: number,
+		sourceNode: HTMLDivElement,
+		getCurrentXY: (e: TouchEvent | MouseEvent) => { x: number; y: number }
+	) => {
 		const popoutRoot = document.getElementById('popout_root')
 		if (!popoutRoot) return
 
-		const rect = button.getBoundingClientRect()
+		const rect = sourceNode.getBoundingClientRect()
 		const offsetX = startX - rect.left
 		const offsetY = startY - rect.top
 
-		const clone = button.cloneNode(true) as HTMLButtonElement
+		const clone = sourceNode.cloneNode(true) as HTMLDivElement
 		clone.style.position = 'fixed'
 		clone.style.left = `${startX - offsetX}px`
 		clone.style.top = `${startY - offsetY}px`
@@ -32,33 +34,65 @@ export function MovableDiv({ onMoveStart, onMove, onMoveEnd, ...props }: Movable
 		clone.style.zIndex = '9999'
 		clone.style.pointerEvents = 'none'
 		popoutRoot.appendChild(clone)
-		button.style.visibility = 'hidden'
+		sourceNode.style.visibility = 'hidden'
 
-		onMoveStart && onMoveStart({ x: offsetX, y: offsetY, node: button })
+		onMoveStart && onMoveStart({ x: offsetX, y: offsetY, node: sourceNode })
 
 		let currentX = 0
 		let currentY = 0
-		const handleTouchMove = (e: TouchEvent) => {
-			currentX = e.touches[0].clientX
-			currentY = e.touches[0].clientY
 
-			clone.style.left = `${currentX - offsetX}px`
-			clone.style.top = `${currentY - offsetY}px`
-			onMove && onMove({ x: currentX - offsetX, y: currentY - offsetY, node: button })
+		const handleMove = (e: TouchEvent | MouseEvent) => {
+			const { x, y } = getCurrentXY(e)
+			currentX = x
+			currentY = y
+
+			clone.style.left = `${x - offsetX}px`
+			clone.style.top = `${y - offsetY}px`
+			onMove && onMove({ x: x - offsetX, y: y - offsetY, node: sourceNode })
 		}
 
-		const handleTouchEnd = () => {
+		const handleEnd = () => {
 			onMoveEnd &&
-				onMoveEnd({ x: currentX - offsetX, y: currentY - offsetY, node: button })
-			window.removeEventListener('touchmove', handleTouchMove)
-			window.removeEventListener('touchend', handleTouchEnd)
+				onMoveEnd({ x: currentX - offsetX, y: currentY - offsetY, node: sourceNode })
+			window.removeEventListener('touchmove', handleMove as any)
+			window.removeEventListener('touchend', handleEnd)
+			window.removeEventListener('mousemove', handleMove as any)
+			window.removeEventListener('mouseup', handleEnd)
 			popoutRoot.removeChild(clone)
-			button.style.visibility = 'visible'
+			sourceNode.style.visibility = 'visible'
 		}
 
-		window.addEventListener('touchmove', handleTouchMove)
-		window.addEventListener('touchend', handleTouchEnd)
+		window.addEventListener('touchmove', handleMove as any)
+		window.addEventListener('touchend', handleEnd)
+		window.addEventListener('mousemove', handleMove as any)
+		window.addEventListener('mouseup', handleEnd)
 	}
 
-	return <div {...props} onTouchStart={handleTouchStart} />
+	const handleTouchStart: TouchEventHandler<HTMLDivElement> = (e) => {
+		handleStart(
+			e.touches[0].clientX,
+			e.touches[0].clientY,
+			e.currentTarget,
+			(e: TouchEvent | MouseEvent) => ({
+				x: (e as TouchEvent).touches?.[0]?.clientX ?? 0,
+				y: (e as TouchEvent).touches?.[0]?.clientY ?? 0,
+			})
+		)
+	}
+
+	const handleMouseDown: MouseEventHandler<HTMLDivElement> = (e) => {
+		handleStart(e.clientX, e.clientY, e.currentTarget, (e: MouseEvent | TouchEvent) => ({
+			x: (e as MouseEvent).clientX,
+			y: (e as MouseEvent).clientY,
+		}))
+	}
+
+	return (
+		<div
+			{...props}
+			onTouchStart={handleTouchStart}
+			onMouseDown={handleMouseDown}
+			style={{ touchAction: 'none', ...props.style }}
+		/>
+	)
 }
