@@ -77,4 +77,8 @@ body {
 	touch-action: manipulation;
 	-webkit-user-select: none; /* Optional: Prevent long-press selection */
 	-webkit-touch-callout: none;
+	overscroll-behavior: none;
+	-webkit-overflow-scrolling: auto;
+	position: fixed;
+	width: 100%;
 }
