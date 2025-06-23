@@ -7,14 +7,15 @@
 	.topbar_container {
 		height: 4rem;
 		min-height: 4rem;
-		background-color: blue;
+		background-color: var(--topbar-color);
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 	.content_container {
-		background-color: red;
+		background-color: var(--background-color);
 		flex-grow: 1;
 		overflow: hidden;
+		padding: 2rem;
 	}
 }

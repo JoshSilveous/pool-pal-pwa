@@ -48,12 +48,11 @@ export function MovableDiv({ onMoveStart, onMove, onMoveEnd, ...props }: Movable
 
 			clone.style.left = `${x - offsetX}px`
 			clone.style.top = `${y - offsetY}px`
-			onMove && onMove({ x: x - offsetX, y: y - offsetY, node: sourceNode })
+			onMove && onMove({ x: x, y: y, node: sourceNode })
 		}
 
 		const handleEnd = () => {
-			onMoveEnd &&
-				onMoveEnd({ x: currentX - offsetX, y: currentY - offsetY, node: sourceNode })
+			onMoveEnd && onMoveEnd({ x: currentX, y: currentY, node: sourceNode })
 			window.removeEventListener('touchmove', handleMove as any)
 			window.removeEventListener('touchend', handleEnd)
 			window.removeEventListener('mousemove', handleMove as any)

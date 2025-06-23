@@ -1,0 +1,20 @@
+.container {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: 2rem;
+	.team_container {
+		background-color: lime;
+		height: 200px;
+		flex-grow: 1;
+		border-radius: 1rem;
+		padding: 0.5rem;
+		border: 2px solid white;
+		.title {
+			font-weight: 500;
+			font-size: 1.2rem;
+			padding-bottom: 0.5rem;
+			border-bottom: 2px solid white;
+		}
+	}
+}

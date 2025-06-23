@@ -6,7 +6,7 @@ import { SetupPage } from './pages/SetupPage/SetupPage'
 import { GamePage } from './pages/GamePage/GamePage'
 
 function App() {
-	const [curPage, setCurPage] = useState<PageName>('welcome')
+	const [curPage, setCurPage] = useState<PageName>('setup')
 
 	return (
 		<div className={s.main}>
