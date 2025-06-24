@@ -4,17 +4,39 @@
 	width: 100%;
 	gap: 2rem;
 	.team_container {
-		background-color: lime;
+		background-color: var(--card-color);
 		height: 200px;
 		flex-grow: 1;
 		border-radius: 1rem;
 		padding: 0.5rem;
-		border: 2px solid white;
+		border: 2px solid var(--gold-accent);
 		.title {
 			font-weight: 500;
 			font-size: 1.2rem;
 			padding-bottom: 0.5rem;
-			border-bottom: 2px solid white;
+			border-bottom: 2px solid var(--gold-accent);
+		}
+
+		.tile_container {
+			padding-top: 0.5rem;
+			display: flex;
+			flex-direction: column;
+			gap: 0.5rem;
+			.tile {
+				padding: 2px 0;
+				border-radius: 2px;
+				width: 100%;
+				background-color: var(--card-color);
+				border: 1px solid var(--font-color);
+			}
+		}
+		.delete_user {
+			margin-top: auto;
+			padding: 2px 0;
+			border-radius: 2px;
+			width: 100%;
+			background-color: var(--card-color);
+			border: 1px solid var(--font-color);
 		}
 	}
 }

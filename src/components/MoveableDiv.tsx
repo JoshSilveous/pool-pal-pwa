@@ -25,8 +25,15 @@ export function MovableDiv({ onMoveStart, onMove, onMoveEnd, ...props }: Movable
 		const rect = sourceNode.getBoundingClientRect()
 		const offsetX = startX - rect.left
 		const offsetY = startY - rect.top
+		const compStyle = getComputedStyle(sourceNode)
 
 		const clone = sourceNode.cloneNode(true) as HTMLDivElement
+		clone.style.padding = compStyle.padding
+		clone.style.backgroundColor = compStyle.backgroundColor
+		clone.style.borderRadius = compStyle.borderRadius
+		clone.style.border = compStyle.border
+		clone.style.width = compStyle.width
+		clone.style.height = compStyle.height
 		clone.style.position = 'fixed'
 		clone.style.left = `${startX - offsetX}px`
 		clone.style.top = `${startY - offsetY}px`
