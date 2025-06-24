@@ -12,10 +12,10 @@ export function SetupPage({ gameCtrl }: Props) {
 	return (
 		<div className={s.container}>
 			<div className={s.title}>Team Setup</div>
-			<TeamsViewer gameCtrl={gameCtrl} />
-			<AddPlayerInput gameCtrl={gameCtrl} />
-			<RandomizeButton gameCtrl={gameCtrl} />
-			<StartGameButton gameCtrl={gameCtrl} />
+			<TeamsViewer className={s.teams_viewer} gameCtrl={gameCtrl} />
+			<AddPlayerInput className={s.add_player} gameCtrl={gameCtrl} />
+			<RandomizeButton className={s.randomize} gameCtrl={gameCtrl} />
+			<StartGameButton className={s.start_game} gameCtrl={gameCtrl} />
 		</div>
 	)
 }

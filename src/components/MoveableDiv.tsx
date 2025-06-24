@@ -6,7 +6,7 @@ interface MovableDivProps extends HTMLAttributes<HTMLDivElement> {
 	onMoveEnd?: (e: MoveEvent) => any
 }
 
-type MoveEvent = {
+export type MoveEvent = {
 	x: number
 	y: number
 	node: HTMLDivElement
@@ -41,7 +41,7 @@ export function MovableDiv({ onMoveStart, onMove, onMoveEnd, ...props }: Movable
 		clone.style.zIndex = '9999'
 		clone.style.pointerEvents = 'none'
 		popoutRoot.appendChild(clone)
-		sourceNode.style.visibility = 'hidden'
+		sourceNode.style.display = 'none'
 
 		onMoveStart && onMoveStart({ x: offsetX, y: offsetY, node: sourceNode })
 
@@ -65,7 +65,7 @@ export function MovableDiv({ onMoveStart, onMove, onMoveEnd, ...props }: Movable
 			window.removeEventListener('mousemove', handleMove as any)
 			window.removeEventListener('mouseup', handleEnd)
 			popoutRoot.removeChild(clone)
-			sourceNode.style.visibility = 'visible'
+			sourceNode.style.display = ''
 		}
 
 		window.addEventListener('touchmove', handleMove as any)

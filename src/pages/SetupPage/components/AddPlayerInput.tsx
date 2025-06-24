@@ -1,11 +1,11 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, type HTMLAttributes } from 'react'
 import type { GameController } from '../../../hooks/useGameState'
 import s from './AddPlayerInput.module.scss'
 
-type Props = {
+interface Props extends HTMLAttributes<HTMLDivElement> {
 	gameCtrl: GameController
 }
-export default function AddPlayerInput({ gameCtrl }: Props) {
+export default function AddPlayerInput({ gameCtrl, className, ...props }: Props) {
 	const [newPlayerName, setNewPlayerName] = useState('')
 	const [teamToAddTo, setTeamToAddTo] = useState<keyof Teams>('one')
 	const inputRef = useRef<HTMLInputElement>(null)
@@ -29,7 +29,7 @@ export default function AddPlayerInput({ gameCtrl }: Props) {
 	}
 
 	return (
-		<div className={s.container}>
+		<div className={`${s.container} ${className}`} {...props}>
 			<input
 				ref={inputRef}
 				value={newPlayerName}

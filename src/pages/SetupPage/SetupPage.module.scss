@@ -1,5 +1,20 @@
 .container {
 	width: 100%;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
+
+	.teams_viewer {
+	}
+
+	.add_player {
+		margin: 2rem 0;
+	}
+	.randomize {
+		margin-top: 1rem;
+	}
+	.start_game {
+		margin-top: 1rem;
+		margin-bottom: 2rem;
+	}
 }

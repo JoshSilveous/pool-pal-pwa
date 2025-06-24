@@ -73,6 +73,25 @@ export default function useGameLogic() {
 		})
 	}
 
+	const deletePlayer: GameController['deletePlayer'] = (id) => {
+		setPlayers((prev) => {
+			const clone = structuredClone(prev)
+			delete clone[id]
+			return clone
+		})
+		setTeams((prev) => {
+			const clone = structuredClone(prev)
+			const teamOneIndex = clone.one.playerIDs.findIndex((pid) => pid === id)
+			const teamTwoIndex = clone.one.playerIDs.findIndex((pid) => pid === id)
+			if (teamOneIndex !== -1) {
+				clone.one.playerIDs.splice(teamOneIndex, 1)
+			} else if (teamTwoIndex !== -1) {
+				clone.one.playerIDs.splice(teamTwoIndex, 1)
+			}
+			return clone
+		})
+	}
+
 	const controller: GameController = {
 		players,
 		teams,
@@ -80,6 +99,7 @@ export default function useGameLogic() {
 		setTeamSides,
 		addNewPlayer,
 		setTeams,
+		deletePlayer,
 		active: {
 			curPlayerID,
 			prevPlayerID,
@@ -99,6 +119,7 @@ export interface GameController {
 	setTeams: React.Dispatch<React.SetStateAction<Teams>>
 	setTeamSides: (teamOneSide: 'stripe' | 'solid', teamTwoSide: 'stripe' | 'solid') => void
 	addNewPlayer: (name: string, team: 'one' | 'two') => void
+	deletePlayer: (id: string) => void
 	active: {
 		curPlayerID: string | null
 		prevPlayerID: string | null
