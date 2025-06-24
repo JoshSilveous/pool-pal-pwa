@@ -1,4 +1,4 @@
-import { useRef, useState, type HTMLAttributes } from 'react'
+import { useRef, useState, type HTMLAttributes, type TouchEventHandler } from 'react'
 import { MovableDiv, type MoveEvent } from '../../../components/MoveableDiv'
 import type { GameController } from '../../../hooks/useGameState'
 import s from './TeamsViewer.module.scss'
@@ -87,12 +87,41 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 			}
 		}
 
-		const team1Breakpoints = (() => {})()
+		const team1Breakpoints = (() => {
+			const breakpoints = [team1Node.getBoundingClientRect().top]
+
+			const gap = parseInt(getComputedStyle(team1Node).gap)
+			team1ChildNodes.forEach((node) => {
+				breakpoints.push(
+					breakpoints.at(-1)! + node.getBoundingClientRect().height + gap
+				)
+			})
+			return breakpoints
+		})()
+		const team2Breakpoints = (() => {
+			const breakpoints = [team2Node.getBoundingClientRect().top]
+
+			const gap = parseInt(getComputedStyle(team2Node).gap)
+			team2ChildNodes.forEach((node) => {
+				breakpoints.push(
+					breakpoints.at(-1)! + node.getBoundingClientRect().height + gap
+				)
+			})
+			return breakpoints
+		})()
+
+		const getClosestBreakpointIndex = (yPos: number, team: 'one' | 'two') => {
+			if (team === 'one') {
+				const distances = team1Breakpoints.map((bkpt) => Math.abs(bkpt - yPos))
+				console.log(distances)
+			}
+		}
 
 		deleteUserRef.current!.classList.add(s.visible)
 
-		const handleMove = () => {
+		const handleMove: TouchEventHandler = (e) => {
 			console.log('moved')
+			getClosestBreakpointIndex(e.touches[0].clientY, 'one')
 		}
 		const handleEnd = () => {
 			console.log('move ended')
