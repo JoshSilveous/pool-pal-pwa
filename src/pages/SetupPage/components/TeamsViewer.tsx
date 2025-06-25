@@ -13,10 +13,12 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 
 	const handleMoveStart = (e: MoveEvent) => {
 		const pid = e.node.dataset.pid!
-		const teamkey = e.node.dataset.teamkey!
+		const teamkey = e.node.dataset.teamkey as 'one' | 'two'
 
 		const deleteUserNode = deleteUserRef.current!
-		const isInDeleteNodeRec = (x: number, y: number) => {
+		deleteUserNode.classList.remove(s.highlighted)
+		deleteUserNode.classList.add(s.visible)
+		const isInDeleteNodeRect = (x: number, y: number) => {
 			const deleteNodeRect = deleteUserNode.getBoundingClientRect()
 			return (
 				x > deleteNodeRect.x &&
@@ -65,24 +67,25 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 
 		const renderGap = (team: 'one' | 'two' | 'none', index: number) => {
 			// remove all margin styles first
-			team1ChildNodes[0].style.marginTop = '20px'
+			// console.log('team1ChildNodes', team1ChildNodes[0])
+			team1ChildNodes[0].style.marginTop = '0px'
 			team1ChildNodes.forEach((node) => (node.style.marginBottom = '0px'))
-			team2ChildNodes[0].style.marginTop = '20px'
+			team2ChildNodes[0].style.marginTop = '0px'
 			team2ChildNodes.forEach((node) => (node.style.marginBottom = '0px'))
 
 			if (team === 'none') return
 
 			if (team === 'one') {
 				if (index === 0) {
-					team1ChildNodes[0].style.marginTop = '20px'
+					team1ChildNodes[0].style.marginTop = '30px'
 				} else {
-					team1ChildNodes[index - 1].style.marginBottom = '20px'
+					team1ChildNodes[index - 1].style.marginBottom = '30px'
 				}
 			} else if (team === 'two') {
 				if (index === 0) {
-					team2ChildNodes[0].style.marginTop = '20px'
+					team2ChildNodes[0].style.marginTop = '30px'
 				} else {
-					team2ChildNodes[index - 1].style.marginBottom = '20px'
+					team2ChildNodes[index - 1].style.marginBottom = '30px'
 				}
 			}
 		}
@@ -113,102 +116,93 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 		const getClosestBreakpointIndex = (yPos: number, team: 'one' | 'two') => {
 			if (team === 'one') {
 				const distances = team1Breakpoints.map((bkpt) => Math.abs(bkpt - yPos))
-				console.log(distances)
+				return distances.indexOf(Math.min(...distances))
+			} else {
+				const distances = team2Breakpoints.map((bkpt) => Math.abs(bkpt - yPos))
+				return distances.indexOf(Math.min(...distances))
 			}
 		}
 
-		deleteUserRef.current!.classList.add(s.visible)
+		const handleMove = (x: number, y: number) => {
+			deleteUserNode.classList.remove(s.highlighted)
+			if (isInTeam1Rect(x, y)) {
+				renderGap('one', getClosestBreakpointIndex(y, 'one'))
+			} else if (isInTeam2Rect(x, y)) {
+				renderGap('two', getClosestBreakpointIndex(y, 'two'))
+			} else if (isInDeleteNodeRect(x, y)) {
+				renderGap('none', 0)
+				// highlight delete node
+				deleteUserNode.classList.add(s.highlighted)
+			} else {
+				renderGap('none', 0)
+			}
+		}
+		const handleEnd = (x: number, y: number) => {
+			renderGap('none', 0)
+			team1ChildNodes[0].style.marginTop = '0px'
+			team1ChildNodes.forEach((node) => {
+				node.style.marginBottom = '0px'
+				node.style.marginTop = '0px'
+			})
+			team2ChildNodes[0].style.marginTop = '0px'
+			team2ChildNodes.forEach((node) => {
+				node.style.marginBottom = '0px'
+				node.style.marginTop = '0px'
+			})
+			deleteUserNode.classList.remove(s.visible)
+			window.removeEventListener('touchmove', handleMoveTouch)
+			window.removeEventListener('touchend', handleEndTouch)
+			window.removeEventListener('mousemove', handleMoveMouse)
+			window.removeEventListener('mouseup', handleEndMouse)
 
-		const handleMove: TouchEventHandler = (e) => {
-			console.log('moved')
-			getClosestBreakpointIndex(e.touches[0].clientY, 'one')
+			if (isInTeam1Rect(x, y)) {
+				const newIndex = getClosestBreakpointIndex(y, 'one')
+				const oldIndex = gameCtrl.teams[teamkey].playerIDs.indexOf(pid)
+				gameCtrl.setTeams((prev) => {
+					const clone = structuredClone(prev)
+
+					clone.one.playerIDs.splice(
+						newIndex,
+						0,
+						clone[teamkey].playerIDs.splice(oldIndex, 1)[0]
+					)
+					return clone
+				})
+			} else if (isInTeam2Rect(x, y)) {
+				const newIndex = getClosestBreakpointIndex(y, 'two')
+				const oldIndex = gameCtrl.teams[teamkey].playerIDs.indexOf(pid)
+				gameCtrl.setTeams((prev) => {
+					const clone = structuredClone(prev)
+
+					clone.two.playerIDs.splice(
+						newIndex,
+						0,
+						clone[teamkey].playerIDs.splice(oldIndex, 1)[0]
+					)
+					return clone
+				})
+			} else if (isInDeleteNodeRect(x, y)) {
+				renderGap('none', 0)
+				// highlight delete node
+				deleteUserNode.classList.add(s.highlighted)
+			} else {
+				renderGap('none', 0)
+			}
 		}
-		const handleEnd = () => {
-			console.log('move ended')
-			window.removeEventListener('touchmove', handleMove as any)
-			window.removeEventListener('touchend', handleEnd)
-			window.removeEventListener('mousemove', handleMove as any)
-			window.removeEventListener('mouseup', handleEnd)
-		}
-		window.addEventListener('touchmove', handleMove as any)
-		window.addEventListener('touchend', handleEnd)
-		window.addEventListener('mousemove', handleMove as any)
-		window.addEventListener('mouseup', handleEnd)
+
+		const handleMoveTouch = (e: TouchEvent) =>
+			handleMove(e.touches[0].clientX, e.touches[0].clientY)
+		const handleEndTouch = (e: TouchEvent) =>
+			handleEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY)
+		const handleMoveMouse = (e: MouseEvent) => handleMove(e.clientX, e.clientY)
+		const handleEndMouse = (e: MouseEvent) => handleEnd(e.clientX, e.clientY)
+
+		window.addEventListener('touchmove', handleMoveTouch)
+		window.addEventListener('touchend', handleEndTouch)
+		window.addEventListener('mousemove', handleMoveMouse)
+		window.addEventListener('mouseup', handleEndMouse)
 	}
-	// const onMove = (e: MoveEvent) => {
-	// 	const pid = e.node.dataset.pid!
-	// 	const teamkey = e.node.dataset.teamkey!
 
-	// 	const team1Rect = team1TileContainerRef.current!.getBoundingClientRect()
-	// 	const team2Rect = team2TileContainerRef.current!.getBoundingClientRect()
-	// 	const deleteUserRect = deleteUserRef.current!.getBoundingClientRect()
-
-	// 	const isInTeam1Rect =
-	// 		e.x > team1Rect.x &&
-	// 		e.x < team1Rect.x + team1Rect.width &&
-	// 		e.y > team1Rect.top &&
-	// 		e.y < team1Rect.top + team1Rect.height
-	// 	const isInTeam2Rect =
-	// 		e.x > team2Rect.x &&
-	// 		e.x < team2Rect.x + team2Rect.width &&
-	// 		e.y > team2Rect.top &&
-	// 		e.y < team2Rect.top + team2Rect.height
-	// 	const isHoveringOverDelete =
-	// 		e.x > deleteUserRect.x &&
-	// 		e.x < deleteUserRect.x + deleteUserRect.width &&
-	// 		e.y > deleteUserRect.top &&
-	// 		e.y < deleteUserRect.top + deleteUserRect.height
-
-	// 	console.log(isHoveringOverDelete)
-
-	// 	// hide highlight effects
-	// 	const team1ChildNodes = Array.from(
-	// 		team1TileContainerRef.current!.childNodes
-	// 	) as HTMLDivElement[]
-	// 	const team2ChildNodes = Array.from(
-	// 		team2TileContainerRef.current!.childNodes
-	// 	) as HTMLDivElement[]
-
-	// 	if (isInTeam1Rect) {
-	// 		// figure out which tile the user's cursor is closest to (0 being before tile 1)
-	// 		const closestInsertIndex = (() => {
-	// 			const breakpoints = team1ChildNodes.map((childNode) => {
-	// 				const rect = childNode.getBoundingClientRect()
-	// 				return rect.top
-	// 			})
-	// 			breakpoints.push(
-	// 				breakpoints.at(-1)! +
-	// 					team1ChildNodes.at(-1)!.getBoundingClientRect().height
-	// 			)
-	// 			const breakpointsDistances = breakpoints.map((br) => Math.abs(br - e.y))
-	// 			return breakpointsDistances.indexOf(Math.min(...breakpointsDistances))
-	// 		})()
-	// 	}
-	// 	if (isInTeam2Rect) {
-	// 		// figure out which tile the user's cursor is closest to (0 being before tile 1)
-	// 		const closestInsertIndex = (() => {
-	// 			const breakpoints = team2ChildNodes.map((childNode) => {
-	// 				const rect = childNode.getBoundingClientRect()
-	// 				return rect.top
-	// 			})
-	// 			breakpoints.push(
-	// 				breakpoints.at(-1)! +
-	// 					team2ChildNodes.at(-1)!.getBoundingClientRect().height
-	// 			)
-	// 			const breakpointsDistances = breakpoints.map((br) => Math.abs(br - e.y))
-	// 			return breakpointsDistances.indexOf(Math.min(...breakpointsDistances))
-	// 		})()
-	// 	}
-	// }
-	// const onMoveEnd = (e: MoveEvent) => {
-	// 	const pid = e.node.dataset.pid!
-	// 	const teamkey = e.node.dataset.teamkey!
-
-	// 	deleteUserRef.current!.classList.remove(s.visible)
-	// 	// if deleting
-	// 	// gameCtrl.deletePlayer(pid)
-	// 	console.log(e.node.dataset)
-	// }
 	return (
 		<div className={`${s.container} ${className}`} {...props}>
 			<div className={s.table}>
