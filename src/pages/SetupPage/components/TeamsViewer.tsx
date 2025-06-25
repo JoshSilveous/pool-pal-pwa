@@ -68,20 +68,24 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 		const renderGap = (team: 'one' | 'two' | 'none', index: number) => {
 			// remove all margin styles first
 			// console.log('team1ChildNodes', team1ChildNodes[0])
-			team1ChildNodes[0].style.marginTop = '0px'
-			team1ChildNodes.forEach((node) => (node.style.marginBottom = '0px'))
-			team2ChildNodes[0].style.marginTop = '0px'
-			team2ChildNodes.forEach((node) => (node.style.marginBottom = '0px'))
+			team1ChildNodes.forEach((node) => {
+				node.style.marginBottom = '0px'
+				node.style.marginTop = '0px'
+			})
+			team2ChildNodes.forEach((node) => {
+				node.style.marginBottom = '0px'
+				node.style.marginTop = '0px'
+			})
 
 			if (team === 'none') return
 
-			if (team === 'one') {
+			if (team === 'one' && team1ChildNodes.length !== 0) {
 				if (index === 0) {
 					team1ChildNodes[0].style.marginTop = '30px'
 				} else {
 					team1ChildNodes[index - 1].style.marginBottom = '30px'
 				}
-			} else if (team === 'two') {
+			} else if (team === 'two' && team2ChildNodes.length !== 0) {
 				if (index === 0) {
 					team2ChildNodes[0].style.marginTop = '30px'
 				} else {
@@ -139,17 +143,22 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 		}
 		const handleEnd = (x: number, y: number) => {
 			renderGap('none', 0)
-			team1ChildNodes[0].style.marginTop = '0px'
-			team1ChildNodes.forEach((node) => {
-				node.style.marginBottom = '0px'
-				node.style.marginTop = '0px'
-			})
-			team2ChildNodes[0].style.marginTop = '0px'
-			team2ChildNodes.forEach((node) => {
-				node.style.marginBottom = '0px'
-				node.style.marginTop = '0px'
-			})
+			if (team1ChildNodes.length !== 0) {
+				team1ChildNodes[0].style.marginTop = '0px'
+				team1ChildNodes.forEach((node) => {
+					node.style.marginBottom = '0px'
+					node.style.marginTop = '0px'
+				})
+			}
+			if (team2ChildNodes.length !== 0) {
+				team2ChildNodes[0].style.marginTop = '0px'
+				team2ChildNodes.forEach((node) => {
+					node.style.marginBottom = '0px'
+					node.style.marginTop = '0px'
+				})
+			}
 			deleteUserNode.classList.remove(s.visible)
+			deleteUserNode.classList.remove(s.highlighted)
 			window.removeEventListener('touchmove', handleMoveTouch)
 			window.removeEventListener('touchend', handleEndTouch)
 			window.removeEventListener('mousemove', handleMoveMouse)
@@ -183,8 +192,7 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 				})
 			} else if (isInDeleteNodeRect(x, y)) {
 				renderGap('none', 0)
-				// highlight delete node
-				deleteUserNode.classList.add(s.highlighted)
+				gameCtrl.deletePlayer(pid)
 			} else {
 				renderGap('none', 0)
 			}
@@ -228,6 +236,13 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 					<div className={s.title}>Team 2</div>
 					<div className={s.tile_container} ref={team2TileContainerRef}>
 						{gameCtrl.teams.two.playerIDs.map((pid) => {
+							// console.log('mapping over pid', pid)
+							// console.log(
+							// 	'checking:',
+							// 	gameCtrl.players,
+							// 	gameCtrl.teams.two.playerIDs
+							// )
+							// console.log('   name found: ', gameCtrl.players[pid].name)
 							const pName = gameCtrl.players[pid].name
 							return (
 								<MovableDiv
