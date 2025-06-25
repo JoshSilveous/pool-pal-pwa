@@ -31,5 +31,9 @@
 			color: white;
 			height: 1.2rem;
 		}
+		&[disabled] {
+			opacity: 60%;
+			user-select: none;
+		}
 	}
 }

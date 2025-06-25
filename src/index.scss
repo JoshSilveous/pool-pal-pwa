@@ -29,22 +29,34 @@ body {
 }
 
 button {
-	border-radius: 8px;
-	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
-	font-weight: 500;
+	background-color: transparent;
+	color: var(--font-color);
+	padding: 0.5rem 1rem;
+	border-radius: 1rem;
+	border: none;
+	font-size: 1.2rem;
 	font-family: inherit;
-	background-color: #1a1a1a;
-	cursor: pointer;
-	transition: border-color 0.25s;
-}
-button:hover {
-	border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+	appearance: none;
+	font-weight: 700;
+	transition: background-color 0.05s ease, box-shadow 0.05s ease;
+	&:focus,
+	&:active {
+		box-shadow: inset 0 0 0 2px var(--gold-accent);
+		background-color: var(--card-color);
+	}
+
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: none;
+	}
+	img {
+		color: white;
+		height: 1.2rem;
+	}
 }
 
 #root {

@@ -95,12 +95,12 @@ export default function useGameLogic() {
 	const controller: GameController = {
 		players,
 		teams,
-		curTeam,
 		setTeamSides,
 		addNewPlayer,
 		setTeams,
 		deletePlayer,
 		active: {
+			curTeam,
 			curPlayerID,
 			prevPlayerID,
 			nextPlayerID,
@@ -115,12 +115,12 @@ export default function useGameLogic() {
 export interface GameController {
 	players: Players
 	teams: Teams
-	curTeam: 'one' | 'two'
 	setTeams: React.Dispatch<React.SetStateAction<Teams>>
 	setTeamSides: (teamOneSide: 'stripe' | 'solid', teamTwoSide: 'stripe' | 'solid') => void
 	addNewPlayer: (name: string, team: 'one' | 'two') => void
 	deletePlayer: (id: string) => void
 	active: {
+		curTeam: 'one' | 'two'
 		curPlayerID: string | null
 		prevPlayerID: string | null
 		nextPlayerID: string | null

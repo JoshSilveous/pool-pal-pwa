@@ -236,13 +236,6 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 					<div className={s.title}>Team 2</div>
 					<div className={s.tile_container} ref={team2TileContainerRef}>
 						{gameCtrl.teams.two.playerIDs.map((pid) => {
-							// console.log('mapping over pid', pid)
-							// console.log(
-							// 	'checking:',
-							// 	gameCtrl.players,
-							// 	gameCtrl.teams.two.playerIDs
-							// )
-							// console.log('   name found: ', gameCtrl.players[pid].name)
 							const pName = gameCtrl.players[pid].name
 							return (
 								<MovableDiv

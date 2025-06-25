@@ -1,3 +1,4 @@
+import type { SetCurPage } from '../../App'
 import type { GameController } from '../../hooks/useGameState'
 import AddPlayerInput from './components/AddPlayerInput'
 import { RandomizeButton } from './components/RandomizeButton'
@@ -7,15 +8,20 @@ import s from './SetupPage.module.scss'
 
 interface Props {
 	gameCtrl: GameController
+	setCurPage: SetCurPage
 }
-export function SetupPage({ gameCtrl }: Props) {
+export function SetupPage({ gameCtrl, setCurPage }: Props) {
 	return (
 		<div className={s.container}>
-			<div className={s.title}>Team Setup</div>
+			<h1>Team Setup</h1>
 			<TeamsViewer className={s.teams_viewer} gameCtrl={gameCtrl} />
 			<AddPlayerInput className={s.add_player} gameCtrl={gameCtrl} />
 			<RandomizeButton className={s.randomize} gameCtrl={gameCtrl} />
-			<StartGameButton className={s.start_game} gameCtrl={gameCtrl} />
+			<StartGameButton
+				className={s.start_game}
+				gameCtrl={gameCtrl}
+				setCurPage={setCurPage}
+			/>
 		</div>
 	)
 }

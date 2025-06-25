@@ -7,7 +7,7 @@ import { GamePage } from './pages/GamePage/GamePage'
 import useGameLogic from './hooks/useGameState'
 
 function App() {
-	const [curPage, setCurPage] = useState<PageName>('setup')
+	const [curPage, setCurPage] = useState<PageName>('welcome')
 	const gameCtrl = useGameLogic()
 
 	return (
@@ -16,12 +16,15 @@ function App() {
 				<TopBar />
 			</div>
 			<div className={s.content_container}>
-				{curPage === 'welcome' && <WelcomePage />}
-				{curPage === 'setup' && <SetupPage gameCtrl={gameCtrl} />}
-				{curPage === 'game' && <GamePage />}
+				{curPage === 'welcome' && <WelcomePage setCurPage={setCurPage} />}
+				{curPage === 'setup' && (
+					<SetupPage gameCtrl={gameCtrl} setCurPage={setCurPage} />
+				)}
+				{curPage === 'game' && <GamePage setCurPage={setCurPage} />}
 			</div>
 		</div>
 	)
 }
+export type SetCurPage = React.Dispatch<React.SetStateAction<PageName>>
 
 export default App
