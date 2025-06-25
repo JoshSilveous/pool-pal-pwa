@@ -74,20 +74,20 @@ export default function useGameLogic() {
 	}
 
 	const deletePlayer: GameController['deletePlayer'] = (id) => {
-		setPlayers((prev) => {
-			const clone = structuredClone(prev)
-			delete clone[id]
-			return clone
-		})
 		setTeams((prev) => {
 			const clone = structuredClone(prev)
 			const teamOneIndex = clone.one.playerIDs.findIndex((pid) => pid === id)
-			const teamTwoIndex = clone.one.playerIDs.findIndex((pid) => pid === id)
+			const teamTwoIndex = clone.two.playerIDs.findIndex((pid) => pid === id)
 			if (teamOneIndex !== -1) {
 				clone.one.playerIDs.splice(teamOneIndex, 1)
 			} else if (teamTwoIndex !== -1) {
-				clone.one.playerIDs.splice(teamTwoIndex, 1)
+				clone.two.playerIDs.splice(teamTwoIndex, 1)
 			}
+			return clone
+		})
+		setPlayers((prev) => {
+			const clone = structuredClone(prev)
+			delete clone[id]
 			return clone
 		})
 	}
