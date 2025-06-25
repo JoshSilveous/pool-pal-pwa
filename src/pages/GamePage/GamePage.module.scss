@@ -1,0 +1,13 @@
+.container {
+	.set_sides {
+		max-width: 300px;
+		margin: 0 auto;
+		.team_container {
+			display: flex;
+			align-items: center;
+			.title {
+				margin-right: auto;
+			}
+		}
+	}
+}

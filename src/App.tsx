@@ -20,7 +20,9 @@ function App() {
 				{curPage === 'setup' && (
 					<SetupPage gameCtrl={gameCtrl} setCurPage={setCurPage} />
 				)}
-				{curPage === 'game' && <GamePage setCurPage={setCurPage} />}
+				{curPage === 'game' && (
+					<GamePage gameCtrl={gameCtrl} setCurPage={setCurPage} />
+				)}
 			</div>
 		</div>
 	)

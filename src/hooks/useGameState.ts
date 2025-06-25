@@ -9,48 +9,44 @@ export default function useGameLogic() {
 	const [curPlayerID, setCurPlayerID] = useState<string>('')
 	const [prevPlayerID, setPrevPlayerID] = useState<string>('')
 	const [nextPlayerID, setNextPlayerID] = useState<string>('')
-	const [curTeam, setCurTeam] = useState<GameController['curTeam']>('one')
+	const [curTeam, setCurTeam] = useState<GameController['active']['curTeam']>('one')
 
-	const gotoNextPlayer = () => {
-		// using the current player, determine who the new nextPlayer is
-		const curPlayerIndex = teams[curTeam].playerIDs.indexOf(curPlayerID)
-		const calcedNextPlayerID =
-			teams[curTeam].playerIDs.length - 1 === curPlayerIndex
-				? teams[curTeam].playerIDs[0]
-				: teams[curTeam].playerIDs[curPlayerIndex + 1]
+	const [turnOrder, setTurnOrder] = useState<string[]>([])
+	const [curTurnIndex, setCurTurnIndex] = useState(0)
 
-		// set prevPlayerID to current curPlayerID
-		setPrevPlayerID(curPlayerID)
+	const startGame = () => {
+		// generate array of turns (1000)
+		const tempTurnOrder = []
 
-		// set curPlayerID to current nextPlayerID
-		setCurPlayerID(nextPlayerID)
-
-		// set nextPlayerID to the calculated next player ID
-		setNextPlayerID(calcedNextPlayerID)
-
-		// update curTeam
-		setCurTeam((prev) => (prev === 'one' ? 'two' : 'one'))
+		let curIndxTm1 = 0
+		let curIndxTm2 = 0
+		let curTm = 1
+		for (let i = 0; i < 1000; i++) {
+			if (curTm === 1) {
+				tempTurnOrder.push(teams.one.playerIDs[curIndxTm1])
+				if (curIndxTm1 === teams.one.playerIDs.length - 1) {
+					curIndxTm1 = 0
+				} else {
+					curIndxTm1++
+				}
+				curTm = 2
+			} else {
+				tempTurnOrder.push(teams.two.playerIDs[curIndxTm2])
+				if (curIndxTm2 === teams.two.playerIDs.length - 1) {
+					curIndxTm2 = 0
+				} else {
+					curIndxTm2++
+				}
+				curTm = 1
+			}
+		}
+		setTurnOrder(tempTurnOrder)
 	}
-
+	const gotoNextPlayer = () => {
+		setCurTurnIndex((pr) => pr + 1)
+	}
 	const gotoPrevPlayer = () => {
-		// using the current player, determine who the new prevPlayer is
-		const curPlayerIndex = teams[curTeam].playerIDs.indexOf(curPlayerID)
-		const calcedPrevPlayerID =
-			curPlayerIndex === 0
-				? teams[curTeam].playerIDs.at(-1)!
-				: teams[curTeam].playerIDs[curPlayerIndex - 1]
-
-		// set nextPlayerID to current curPlayerID
-		setNextPlayerID(curPlayerID)
-
-		// set curPlayerID to current prevPlayerID
-		setCurPlayerID(prevPlayerID)
-
-		// set prevPlayerID to the calculated next player
-		setPrevPlayerID(calcedPrevPlayerID)
-
-		// update curTeam
-		setCurTeam((prev) => (prev === 'one' ? 'two' : 'one'))
+		setCurTurnIndex((pr) => pr - 1)
 	}
 
 	const setTeamSides: GameController['setTeamSides'] = (teamOneSide, teamTwoSide) => {
@@ -92,6 +88,11 @@ export default function useGameLogic() {
 		})
 	}
 
+	const endGame = () => {
+		setTurnOrder([])
+		setCurTurnIndex(0)
+	}
+
 	const controller: GameController = {
 		players,
 		teams,
@@ -99,11 +100,12 @@ export default function useGameLogic() {
 		addNewPlayer,
 		setTeams,
 		deletePlayer,
+		startGame,
+		endGame,
 		active: {
 			curTeam,
-			curPlayerID,
-			prevPlayerID,
-			nextPlayerID,
+			turnOrder,
+			curTurnIndex,
 			gotoNextPlayer,
 			gotoPrevPlayer,
 		},
@@ -119,11 +121,12 @@ export interface GameController {
 	setTeamSides: (teamOneSide: 'stripe' | 'solid', teamTwoSide: 'stripe' | 'solid') => void
 	addNewPlayer: (name: string, team: 'one' | 'two') => void
 	deletePlayer: (id: string) => void
+	startGame: () => void
+	endGame: () => void
 	active: {
 		curTeam: 'one' | 'two'
-		curPlayerID: string | null
-		prevPlayerID: string | null
-		nextPlayerID: string | null
+		turnOrder: string[]
+		curTurnIndex: number
 		gotoNextPlayer: () => void
 		gotoPrevPlayer: () => void
 	}

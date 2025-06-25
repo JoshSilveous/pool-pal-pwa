@@ -1,6 +1,6 @@
 import s from './StartGameButton.module.scss'
 import type { GameController } from '../../../hooks/useGameState'
-import type { HTMLAttributes } from 'react'
+import { useEffect, type HTMLAttributes } from 'react'
 import type { SetCurPage } from '../../../App'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -16,6 +16,7 @@ export function StartGameButton({ gameCtrl, className, setCurPage, ...props }: P
 					gameCtrl.teams.two.playerIDs.length === 0
 				}
 				onClick={() => {
+					gameCtrl.startGame()
 					setCurPage('game')
 				}}
 			>
