@@ -91,6 +91,12 @@ export default function useGameLogic() {
 	const endGame = () => {
 		setTurnOrder([])
 		setCurTurnIndex(0)
+		setTeams((prev) => {
+			const clone = structuredClone(prev)
+			clone.one.side = null
+			clone.two.side = null
+			return clone
+		})
 	}
 
 	const controller: GameController = {
