@@ -1,4 +1,4 @@
-import { useRef, useState, type HTMLAttributes, type TouchEventHandler } from 'react'
+import { useRef, type HTMLAttributes } from 'react'
 import { MovableDiv, type MoveEvent } from '../../../components/MoveableDiv'
 import type { GameController } from '../../../hooks/useGameState'
 import s from './TeamsViewer.module.scss'

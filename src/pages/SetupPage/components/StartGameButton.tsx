@@ -1,6 +1,6 @@
 import s from './StartGameButton.module.scss'
 import type { GameController } from '../../../hooks/useGameState'
-import { useEffect, type HTMLAttributes } from 'react'
+import { type HTMLAttributes } from 'react'
 import type { SetCurPage } from '../../../App'
 
 interface Props extends HTMLAttributes<HTMLDivElement> {

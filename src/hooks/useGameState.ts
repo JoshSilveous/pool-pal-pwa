@@ -6,10 +6,6 @@ export default function useGameLogic() {
 		one: { playerIDs: [], side: null },
 		two: { playerIDs: [], side: null },
 	})
-	const [curPlayerID, setCurPlayerID] = useState<string>('')
-	const [prevPlayerID, setPrevPlayerID] = useState<string>('')
-	const [nextPlayerID, setNextPlayerID] = useState<string>('')
-	const [curTeam, setCurTeam] = useState<GameController['active']['curTeam']>('one')
 
 	const [turnOrder, setTurnOrder] = useState<string[]>([])
 	const [curTurnIndex, setCurTurnIndex] = useState(0)
@@ -109,7 +105,6 @@ export default function useGameLogic() {
 		startGame,
 		endGame,
 		active: {
-			curTeam,
 			turnOrder,
 			curTurnIndex,
 			gotoNextPlayer,
@@ -130,7 +125,6 @@ export interface GameController {
 	startGame: () => void
 	endGame: () => void
 	active: {
-		curTeam: 'one' | 'two'
 		turnOrder: string[]
 		curTurnIndex: number
 		gotoNextPlayer: () => void

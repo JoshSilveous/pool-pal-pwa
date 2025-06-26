@@ -1,5 +1,3 @@
-import s from './WelcomePage.module.scss'
-import { MovableDiv } from '../../components/MoveableDiv'
 import type { SetCurPage } from '../../App'
 
 export function WelcomePage({ setCurPage }: { setCurPage: SetCurPage }) {

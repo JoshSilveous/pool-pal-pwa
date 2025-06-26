@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import type { SetCurPage } from '../../App'
 import type { GameController } from '../../hooks/useGameState'
 import s from './GamePage.module.scss'
