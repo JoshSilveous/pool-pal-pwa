@@ -1,4 +1,51 @@
 .container {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	table {
+		width: 100%;
+		table-layout: fixed; // ← let explicit widths win
+		border-collapse: collapse;
+		font-family: sans-serif;
+		margin: 1rem 0;
+		border-radius: 15px;
+
+		th,
+		td {
+			border: 1px solid var(--gold-accent);
+			padding: 0.5rem 1rem;
+			text-align: left;
+			background-color: var(--card-color);
+		}
+
+		/* 2-nd column width */
+		th:nth-child(2),
+		td:nth-child(2) {
+			width: 60px; // pick the width you need
+			overflow: hidden; // keep cells from stretching
+			text-overflow: ellipsis; // optional: add "…"
+			white-space: nowrap;
+		}
+
+		.current {
+			font-weight: 700;
+		}
+
+		tr:nth-child(even) td {
+			background-color: var(--card-color-lgt);
+		}
+	}
+
+	.nav_container {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	[disabled] {
+		opacity: 60%;
+		user-select: none;
+	}
+
 	.set_sides {
 		max-width: 300px;
 		margin: 0 auto;
@@ -9,5 +56,12 @@
 				margin-right: auto;
 			}
 		}
+	}
+
+	.end_game_container {
+		margin-top: auto;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 }

@@ -24,7 +24,7 @@ export function GamePage({
 				? gameCtrl.teams[thisUserTeam].side
 				: thisUserTeam
 			temp.push(
-				<tr>
+				<tr className={i === 0 ? s.current : undefined}>
 					<td>{gameCtrl.players[thisUserID].name}</td>
 					<td>{teamLabel.charAt(0).toUpperCase() + teamLabel.slice(1)}</td>
 				</tr>
@@ -48,8 +48,13 @@ export function GamePage({
 				</tr>
 				{rows}
 			</table>
-			<div>
-				<button onClick={gameCtrl.active.gotoPrevPlayer}>Prev</button>
+			<div className={s.nav_container}>
+				<button
+					onClick={gameCtrl.active.gotoPrevPlayer}
+					disabled={gameCtrl.active.curTurnIndex === 0}
+				>
+					Prev
+				</button>
 				<button onClick={gameCtrl.active.gotoNextPlayer}>Next</button>
 			</div>
 			{!gameCtrl.teams.one.side && (
@@ -75,7 +80,9 @@ export function GamePage({
 					</div>
 				</div>
 			)}
-			<button onClick={endGame}>End Game</button>
+			<div className={s.end_game_container}>
+				<button onClick={endGame}>End Game</button>
+			</div>
 		</div>
 	)
 }
