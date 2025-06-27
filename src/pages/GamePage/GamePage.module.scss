@@ -2,6 +2,7 @@
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+
 	table {
 		width: 100%;
 		table-layout: fixed; // ← let explicit widths win
