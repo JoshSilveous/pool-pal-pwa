@@ -24,7 +24,10 @@ export function GamePage({
 				: thisUserTeam
 			temp.push(
 				<tr className={i === 0 ? s.current : undefined}>
-					<td>{gameCtrl.players[thisUserID].name}</td>
+					<td>
+						{gameCtrl.players[thisUserID].name}
+						{i === 0 ? ' - Current' : ''}
+					</td>
 					<td>{teamLabel.charAt(0).toUpperCase() + teamLabel.slice(1)}</td>
 				</tr>
 			)
@@ -60,7 +63,7 @@ export function GamePage({
 				<div className={s.set_sides}>
 					<h2>Set Sides</h2>
 					<div className={s.team_container}>
-						<div className={s.title}>Team 1</div>
+						<div className={s.title}>Team 1:</div>
 						<button onClick={() => gameCtrl.setTeamSides('stripe', 'solid')}>
 							Stripes
 						</button>
@@ -69,7 +72,7 @@ export function GamePage({
 						</button>
 					</div>
 					<div className={s.team_container}>
-						<div className={s.title}>Team 2</div>
+						<div className={s.title}>Team 2:</div>
 						<button onClick={() => gameCtrl.setTeamSides('stripe', 'solid')}>
 							Stripes
 						</button>

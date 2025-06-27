@@ -41,19 +41,23 @@
 		justify-content: space-between;
 	}
 
-	[disabled] {
-		opacity: 60%;
-		user-select: none;
-	}
-
 	.set_sides {
 		max-width: 300px;
-		margin: 0 auto;
+		margin: 1rem auto 0 auto;
+		background-color: var(--btn-color);
+		border-radius: 1rem;
+		padding: 1rem;
 		.team_container {
+			padding: 0.2rem;
 			display: flex;
 			align-items: center;
 			.title {
 				margin-right: auto;
+				width: 150px;
+			}
+
+			&:last-child {
+				border-top: 2px solid var(--font-color);
 			}
 		}
 	}
