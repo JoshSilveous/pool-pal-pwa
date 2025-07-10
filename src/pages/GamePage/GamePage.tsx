@@ -23,7 +23,7 @@ export function GamePage({
 				? gameCtrl.teams[thisUserTeam].side
 				: thisUserTeam
 			temp.push(
-				<tr className={i === 0 ? s.current : undefined}>
+				<tr className={i === 0 ? s.current : undefined} key={i}>
 					<td>
 						{gameCtrl.players[thisUserID].name}
 						{i === 0 ? ' - Current' : ''}
@@ -44,11 +44,13 @@ export function GamePage({
 		<div className={s.container}>
 			<h1>Game</h1>
 			<table>
-				<tr>
-					<th>Name</th>
-					<th>Team</th>
-				</tr>
-				{rows}
+				<tbody>
+					<tr>
+						<th>Name</th>
+						<th>Team</th>
+					</tr>
+					{rows}
+				</tbody>
 			</table>
 			<div className={s.nav_container}>
 				<button

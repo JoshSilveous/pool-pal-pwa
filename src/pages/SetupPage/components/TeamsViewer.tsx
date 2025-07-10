@@ -225,6 +225,7 @@ export function TeamsViewer({ gameCtrl, className, ...props }: Props) {
 									onMoveStart={handleMoveStart}
 									data-pid={pid}
 									data-teamkey='one'
+									key={pid}
 								>
 									{pName}
 								</MovableDiv>
