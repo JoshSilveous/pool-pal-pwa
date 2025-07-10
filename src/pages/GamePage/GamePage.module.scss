@@ -3,6 +3,33 @@
 	flex-direction: column;
 	height: 100%;
 
+	.vs_container {
+		flex: 1;
+		display: flex;
+		width: 300px;
+		margin-left: auto;
+		margin-right: auto;
+		max-height: 100px;
+
+		.team_1,
+		.team_2,
+		.vs {
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+			justify-content: center;
+		}
+		.team_1 {
+			flex: 1;
+			text-align: left;
+		}
+		.team_2 {
+			flex: 1;
+			text-align: right;
+		}
+	}
+
 	table {
 		width: 100%;
 		table-layout: fixed; // ← let explicit widths win

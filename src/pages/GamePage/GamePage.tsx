@@ -42,7 +42,19 @@ export function GamePage({
 
 	return (
 		<div className={s.container}>
-			<h1>Game</h1>
+			<div className={s.vs_container}>
+				<div className={s.team_1}>
+					{gameCtrl.teams.one.playerIDs.map((id) => (
+						<div>{gameCtrl.players[id].name}</div>
+					))}
+				</div>
+				<div className={s.vs}>vs</div>
+				<div className={s.team_2}>
+					{gameCtrl.teams.two.playerIDs.map((id) => (
+						<div>{gameCtrl.players[id].name}</div>
+					))}
+				</div>
+			</div>
 			<table>
 				<tbody>
 					<tr>
